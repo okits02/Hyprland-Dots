@@ -114,11 +114,9 @@ handle_open() {
         sleep 0.2
     done
 
-    # Restore wallpaper on re-enabled internal monitor. fd 9 is closed
-    # defensively: handle_open holds no lock, but a caller might, and a child
-    # that inherits a lock descriptor keeps the lock for its whole lifetime.
+    # Restore wallpaper on re-enabled internal monitor
     if [ -x "$SCRIPTSDIR/WallpaperDaemon.sh" ]; then
-        "$SCRIPTSDIR/WallpaperDaemon.sh" >> "$LOGFILE" 2>&1 9>&- &
+        "$SCRIPTSDIR/WallpaperDaemon.sh" >> "$LOGFILE" 2>&1 &
     fi
 
     sleep 0.3
@@ -151,12 +149,9 @@ handle_refresh() {
     # legacy `dispatch dpms on` form, so use the hl.dsp dispatcher.
     hyprctl dispatch hl.dsp.dpms '{ action = "on" }' >> "$LOGFILE" 2>&1 || true
 
-    # Restore wallpaper on all active displays. 9>&- : the lock above is held on
-    # fd 9, and flock keeps it until every descriptor on the open file
-    # description is closed - so a child that inherits fd 9 holds the lock for
-    # its whole lifetime and every later refresh is skipped as "already running".
+    # Restore wallpaper on all active displays
     if [ -x "$SCRIPTSDIR/WallpaperDaemon.sh" ]; then
-        "$SCRIPTSDIR/WallpaperDaemon.sh" >> "$LOGFILE" 2>&1 9>&- || true
+        "$SCRIPTSDIR/WallpaperDaemon.sh" >> "$LOGFILE" 2>&1 || true
     fi
 
     # Refresh Waybar so its layer surfaces match the updated monitor positions.
@@ -168,7 +163,7 @@ handle_refresh() {
         pkill -SIGUSR2 -x waybar >> "$LOGFILE" 2>&1 || true
         sleep 0.2
     elif [ -x "$SCRIPTSDIR/WaybarStartup.sh" ]; then
-        "$SCRIPTSDIR/WaybarStartup.sh" >> "$LOGFILE" 2>&1 9>&- || true
+        "$SCRIPTSDIR/WaybarStartup.sh" >> "$LOGFILE" 2>&1 || true
     fi
 
     exec 9>&-

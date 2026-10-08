@@ -1,4 +1,0 @@
-workspace>>2
-activewindow>>firefox,x
-focusedmon>>eDP-1,1
-openlayer>>waybar
