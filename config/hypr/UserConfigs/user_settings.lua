@@ -53,7 +53,10 @@ hl.config({
 --     focus_on_activate = true,
 --   },
 -- })
+<<<<<<< HEAD
 --
+=======
+>>>>>>> upstream/main
 
 -- Example:
 -- hl.config({
